@@ -1,10 +1,7 @@
-
 from datetime import datetime, timedelta
-from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow import DAG
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
-from consts import DATA_DIR, DATE, currency_list, AIRFLOW_USER, AIRFLOW_PASSWORD, AIRFLOW_DB
+from consts import DATA_DIR, DATE, currency_list
 from airflow.decorators import dag, task
 import requests
 import json
@@ -16,6 +13,7 @@ default_args = {
     'retries': 5,
     'retry_delay': timedelta(minutes=5)
 }
+
 
 @dag(dag_id="etl_exchange_rate_dag", start_date=datetime(2023, 2, 3),
      default_args=default_args, schedule_interval='@daily')
