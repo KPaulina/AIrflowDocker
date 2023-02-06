@@ -31,17 +31,17 @@ def get_data_from_API_etl():
             try:
                 res.raise_for_status ()
             except requests.exceptions.HTTPError as e:
-                print ("Error: " + str (e))
+                print("Error: " + str (e))
             except requests.exceptions.ConnectionError as errc:
-                print ("Error Connecting:", errc)
+                print("Error Connecting:", errc)
             except requests.exceptions.Timeout as errt:
-                print ("Timeout Error:", errt)
+                print("Timeout Error:", errt)
             except requests.exceptions.RequestException as err:
-                print ("OOps: Something Else", err)
+                print("OOps: Something Else", err)
 
-            with open (os.path.join (DATA_DIR, f'exchange_rate_{DATE}_{currency}.json'), 'w',
+            with open(os.path.join(DATA_DIR, f'exchange_rate_{DATE}_{currency}.json'), 'w',
                        encoding='utf-8') as json_file:
-                json.dump (json_data, json_file, ensure_ascii=False, indent=4)
+                json.dump(json_data, json_file, ensure_ascii=False, indent=4)
 
 
     @task()
@@ -65,7 +65,7 @@ def get_data_from_API_etl():
         try:
             db = create_engine(f'postgresql+psycopg2://airflow:airflow@postgres/exchange_rate')
             conn = db.connect()
-            df_exchange_rate.to_sql('exchange_rate', conn, schema='public', if_exists='replace', index=False)
+            df_exchange_rate.to_sql('exchange_rate', conn, schema='public', if_exists='append', index=False)
         except OperationalError as error:
             print(f'Operational error: {error}')
 
