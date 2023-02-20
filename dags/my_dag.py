@@ -40,21 +40,23 @@ def get_data_from_API_etl():
             with open(os.path.join(DATA_DIR, f'exchange_rate_{DATE}_{currency}.json'), 'w',
                        encoding='utf-8') as json_file:
                 json.dump(json_data, json_file, ensure_ascii=False, indent=4)
+                return True
 
 
     @task()
-    def json_to_dataframe():
-        dfs = []
-        for currency in currency_list:
-            df_exchange_rate = pd.read_json(os.path.join(DATA_DIR, f'exchange_rate_{DATE}_{currency}.json'))
+    def json_to_dataframe(bool_value: bool):
+        if bool_value:
+            dfs = []
+            for currency in currency_list:
+                df_exchange_rate = pd.read_json(os.path.join(DATA_DIR, f'exchange_rate_{DATE}_{currency}.json'))
+                df_exchange_rate = df_exchange_rate.reset_index()
+                df_exchange_rate['main_currency_code'] = currency
+                df_exchange_rate = df_exchange_rate.rename(columns={'index': 'currency_code'})
+                df_exchange_rate = df_exchange_rate[['main_currency_code', 'currency_code', 'provider', 'time_last_update_utc', 'rates']]
+                dfs.append (df_exchange_rate)
+            df_exchange_rate = pd.concat(dfs)
             df_exchange_rate = df_exchange_rate.reset_index()
-            df_exchange_rate['main_currency_code'] = currency
-            df_exchange_rate = df_exchange_rate.rename(columns={'index': 'currency_code'})
-            df_exchange_rate = df_exchange_rate[['main_currency_code', 'currency_code', 'provider', 'time_last_update_utc', 'rates']]
-            dfs.append (df_exchange_rate)
-        df_exchange_rate = pd.concat(dfs)
-        df_exchange_rate = df_exchange_rate.reset_index()
-        return df_exchange_rate.to_json()
+            return df_exchange_rate.to_json()
 
     @task()
     def load(df_exchange_rate):
@@ -68,8 +70,8 @@ def get_data_from_API_etl():
             print(f'Operational error: {error}')
 
 
-    get_exchange_rate()
-    df_exchange_rate = json_to_dataframe()
+    bool_value = get_exchange_rate()
+    df_exchange_rate = json_to_dataframe(bool_value)
     load(df_exchange_rate)
 
 
