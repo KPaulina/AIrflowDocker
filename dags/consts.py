@@ -17,7 +17,4 @@ DB_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 DB_HOST = os.getenv('POSTGRES_HOST')
 DB_PORT = str(os.getenv('POSTGRES_PORT'))
 
-AIRFLOW_USER = os.getenv('AIRFLOW_USER')
-AIRFLOW_PASSWORD = os.getenv('AIRFLOW_PASSWORD')
-AIRFLOW_DB = os.getenv('AIRFLOW_DB')
 
