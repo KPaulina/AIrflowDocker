@@ -40,7 +40,7 @@ def get_data_from_API_etl():
             with open(os.path.join(DATA_DIR, f'exchange_rate_{DATE}_{currency}.json'), 'w',
                        encoding='utf-8') as json_file:
                 json.dump(json_data, json_file, ensure_ascii=False, indent=4)
-                return True
+        return True
 
 
     @task()
