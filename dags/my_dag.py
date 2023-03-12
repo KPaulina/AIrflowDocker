@@ -61,11 +61,10 @@ def get_data_from_API_etl():
     @task()
     def load(df_exchange_rate):
         df_exchange_rate = pd.read_json(df_exchange_rate)
-        df_exchange_rate = df_exchange_rate[['main_currency_code', 'currency_code', 'provider', 'time_last_update_utc', 'rates']]
+        df_exchange_rate = df_exchange_rate[['main_currency_code', 'currency_code', 'time_last_update_utc', 'rates']]
         try:
             db = create_engine(f'postgresql+psycopg2://airflow:airflow@postgres/exchange_rate')
-            conn = db.connect()
-            df_exchange_rate.to_sql('exchange_rate', conn, schema='public', if_exists='append', index=False)
+            df_exchange_rate.to_sql('exchange_rate', db, schema='public', if_exists='append', index=False)
         except OperationalError as error:
             print(f'Operational error: {error}')
 

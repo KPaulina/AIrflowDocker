@@ -14,7 +14,7 @@ default_args = {
 
 
 with DAG(dag_id='create_table',
-         start_date=datetime(2023, 2, 5),
+         start_date=datetime(2023, 3, 12),
          schedule='@once',
          default_args=default_args,
          catchup=False) as dag:
